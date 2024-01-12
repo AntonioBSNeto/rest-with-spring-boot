@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.data.vo.v1.PersonVO;
-import com.example.demo.services.PersonServices;
+import com.example.demo.data.vo.v1.BookVO;
+import com.example.demo.services.BookServices;
 import com.example.demo.util.MediaType;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,22 +25,21 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/api/person/v1")
-@Tag(name = "People", description = "Endpoints for Managing People")
-public class PersonController {
+@RequestMapping("/api/book/v1")
+@Tag(name = "Book", description = "Endpoints for Managing Book")
+public class BookController {
 
 	@Autowired
-	private PersonServices service;
+	private BookServices service;
 
-	@CrossOrigin("http://localhost:8080")
 	@GetMapping(value = "/{id}",
 		produces = { 
 			MediaType.APPLICATION_JSON,
 			MediaType.APPLICATION_XML,
 			MediaType.APPLICATION_YML			
 	})
-	@Operation(summary = "Finds a person", description = "Finds a person",
-		tags = {"People"},
+	@Operation(summary = "Finds a book", description = "Finds a book",
+		tags = {"Book"},
 		responses = {
 				@ApiResponse(description = "Success", responseCode = "200",
 					content = @Content
@@ -53,7 +51,7 @@ public class PersonController {
 				@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
 		}
 	)
-	public PersonVO findById(@PathVariable(value = "id") Long id) {
+	public BookVO findById(@PathVariable(value = "id") Long id) {
 		return service.findById(id);
 	}
 
@@ -62,14 +60,14 @@ public class PersonController {
 		MediaType.APPLICATION_XML,
 		MediaType.APPLICATION_YML
 	})
-	@Operation(summary = "Finds all people", description = "Finds All People",
-		tags = {"People"},
+	@Operation(summary = "Finds all book", description = "Finds All Book",
+		tags = {"Book"},
 		responses = {
 			@ApiResponse(description = "Success", responseCode = "200",
 				content = {
 					@Content(
 						mediaType = "application/json",
-						array = @ArraySchema(schema = @Schema(implementation = PersonVO.class))
+						array = @ArraySchema(schema = @Schema(implementation = BookVO.class))
 					)
 				}
 			),
@@ -79,38 +77,38 @@ public class PersonController {
 			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
 		}
 	)
-	public List<PersonVO> findAll() {
+	public List<BookVO> findAll() {
 		return service.findAll();
 	}
 
 	@PostMapping(
 		consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML },
 		produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
-	@Operation(summary = "Adds a new person", 
-		description = "Adss a new person by passing in a JSON, XML or YML representation of the person",
-		tags = {"People"},
+	@Operation(summary = "Adds a new book", 
+		description = "Adss a new book by passing in a JSON, XML or YML representation of the book",
+		tags = {"Book"},
 		responses = {
 			@ApiResponse(description = "Success", responseCode = "200",
-				content = @Content(schema = @Schema(implementation = PersonVO.class))
+				content = @Content(schema = @Schema(implementation = BookVO.class))
 			),
 			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
 			@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
 			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
 		}
 	)
-	public PersonVO create(@RequestBody PersonVO person) {
-		return service.create(person);
+	public BookVO create(@RequestBody BookVO book) {
+		return service.create(book);
 	}
 
 	@PutMapping(
 		consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML },
 		produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
-	@Operation(summary = "Updates a person", 
-		description = "Updates a person by passing in a JSON, XML or YML representation of the person",
-		tags = {"People"},
+	@Operation(summary = "Updates a book", 
+		description = "Updates a book by passing in a JSON, XML or YML representation of the book",
+		tags = {"Book"},
 		responses = {
 			@ApiResponse(description = "Updated", responseCode = "200",
-				content = @Content(schema = @Schema(implementation = PersonVO.class))
+				content = @Content(schema = @Schema(implementation = BookVO.class))
 			),
 			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
 			@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
@@ -118,14 +116,14 @@ public class PersonController {
 			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
 		}
 	)
-	public PersonVO update(@RequestBody PersonVO person) {
-		return service.update(person);
+	public BookVO update(@RequestBody BookVO book) {
+		return service.update(book);
 	}
 
 	@DeleteMapping(value = "/{id}")
-	@Operation(summary = "Deletes a person", 
-		description = "Deletes a person by passing in a JSON, XML or YML representation of the person",
-		tags = {"People"},
+	@Operation(summary = "Deletes a book", 
+		description = "Deletes a book by passing in a JSON, XML or YML representation of the book",
+		tags = {"Book"},
 		responses = {
 			@ApiResponse(description = "No Content", responseCode = "204", content = @Content),
 			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
