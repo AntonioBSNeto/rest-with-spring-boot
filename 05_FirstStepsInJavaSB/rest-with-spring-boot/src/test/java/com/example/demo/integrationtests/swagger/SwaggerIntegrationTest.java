@@ -1,4 +1,4 @@
-package com.example.demo.integrationtests.controller.withjson;
+package com.example.demo.integrationtests.swagger;
 
 import static io.restassured.RestAssured.*;
 

@@ -3,9 +3,10 @@ package com.example.demo.integrationtests.vo;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.springframework.hateoas.RepresentationModel;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
-public class PersonVO extends RepresentationModel<PersonVO> implements Serializable {
+@XmlRootElement
+public class PersonVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
