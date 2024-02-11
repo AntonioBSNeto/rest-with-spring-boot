@@ -1,10 +1,12 @@
 package com.example.demo.unittests.mockito.services;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -61,49 +63,6 @@ class BookServicesTest {
 		assertEquals(10.00, result.getPrice());
 		assertEquals("Title Test1", result.getTitle());
 	}
-
-	/*
-	 * @Test void testFindAll() { List<Book> list = input.mockEntityList();
-	 * 
-	 * when(repository.findAll()).thenReturn(list);
-	 * 
-	 * var book = service.findAll();
-	 * 
-	 * assertNotNull(book); assertEquals(14, book.size());
-	 * 
-	 * var bookOne = book.get(1);
-	 * 
-	 * assertNotNull(bookOne); assertNotNull(bookOne.getKey());
-	 * assertNotNull(bookOne.getLinks());
-	 * 
-	 * assertTrue(bookOne.toString().
-	 * contains("links: [</api/book/v1/1>;rel=\"self\"]"));
-	 * assertEquals("Author Test1", bookOne.getAuthor()); assertEquals(new
-	 * Date(10000000L), bookOne.getLaunchDate()); assertEquals(10.00,
-	 * bookOne.getPrice()); assertEquals("Title Test1", bookOne.getTitle());
-	 * 
-	 * var bookFour = book.get(4);
-	 * 
-	 * assertNotNull(bookFour); assertNotNull(bookFour.getKey());
-	 * assertNotNull(bookFour.getLinks());
-	 * 
-	 * assertTrue(bookFour.toString().
-	 * contains("links: [</api/book/v1/4>;rel=\"self\"]"));
-	 * assertEquals("Author Test4", bookFour.getAuthor()); assertEquals(new
-	 * Date(10000000L), bookFour.getLaunchDate()); assertEquals(10.00,
-	 * bookFour.getPrice()); assertEquals("Title Test4", bookFour.getTitle());
-	 * 
-	 * var bookSeven = book.get(7);
-	 * 
-	 * assertNotNull(bookSeven); assertNotNull(bookSeven.getKey());
-	 * assertNotNull(bookSeven.getLinks());
-	 * 
-	 * assertTrue(bookSeven.toString().
-	 * contains("links: [</api/book/v1/7>;rel=\"self\"]"));
-	 * assertEquals("Author Test7", bookSeven.getAuthor()); assertEquals(new
-	 * Date(10000000L), bookFour.getLaunchDate()); assertEquals(10.00,
-	 * bookSeven.getPrice()); assertEquals("Title Test7", bookSeven.getTitle()); }
-	 */
 
 	@Test
 	void testCreate() {

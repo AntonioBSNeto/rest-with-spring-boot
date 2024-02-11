@@ -118,7 +118,7 @@ public class PersonServices {
 	public PersonVO disbablePerson(Long id) {
 		logger.info("Disabling one PersonVO!");
 
-		repository.disbablePerson(id);
+		repository.disablePerson(id);
 		
 		Person entity = repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this IDs!"));
