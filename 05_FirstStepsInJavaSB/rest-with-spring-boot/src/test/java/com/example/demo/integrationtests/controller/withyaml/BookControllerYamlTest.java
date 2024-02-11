@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -22,12 +20,9 @@ import com.example.demo.integrationtests.testcontainers.AbstractIntegrationTest;
 import com.example.demo.integrationtests.vo.AccountCredentialsVO;
 import com.example.demo.integrationtests.vo.BookVO;
 import com.example.demo.integrationtests.vo.TokenVO;
+import com.example.demo.integrationtests.vo.pagedmodels.PagedModelBook;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
@@ -226,7 +221,7 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
 	@Order(5)
 	public void testFindAll() throws JsonMappingException, JsonProcessingException {
 
-		var content = given().spec(specification)
+		var wrapper = given().spec(specification)
 				.config(
 					RestAssuredConfig
 						.config()
@@ -236,15 +231,16 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
 								ContentType.TEXT)))
 				.contentType(TestConfigs.CONTENT_TYPE_YML)
 				.accept(TestConfigs.CONTENT_TYPE_YML)
+				.queryParams("page", 1, "size", 6, "direction", "asc")
 					.when()
 					.get()
 				.then()
 					.statusCode(200)
 						.extract()
 						.body()
-						 .as(BookVO[].class, objectMapper);
+						 .as(PagedModelBook.class, objectMapper);
 
-		List<BookVO> books = Arrays.asList(content);
+		var books = wrapper.getContent();
 		
 		BookVO foundBookOne = books.get(0);
 
@@ -253,11 +249,11 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
 		assertNotNull(foundBookOne.getTitle());
 		assertNotNull(foundBookOne.getPrice());
 
-		assertTrue(foundBookOne.getId() > 0);
+		assertEquals(7, foundBookOne.getId());
 		
-		assertEquals("Michael C. Feathers", foundBookOne.getAuthor());
-		assertEquals("Working effectively with legacy code", foundBookOne.getTitle());
-		assertEquals(49.00, foundBookOne.getPrice());
+		assertEquals("Eric Freeman, Elisabeth Freeman, Kathy Sierra, Bert Bates", foundBookOne.getAuthor());
+		assertEquals("Head First Design Patterns", foundBookOne.getTitle());
+		assertEquals(110.0, foundBookOne.getPrice());
 
 		BookVO foundBookSix = books.get(5);
 
@@ -266,11 +262,11 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
 		assertNotNull(foundBookSix.getTitle());
 		assertNotNull(foundBookSix.getPrice());
 		
-		assertTrue(foundBookSix.getId() > 0);
+		assertEquals(13, foundBookSix.getId());
 		
-		assertEquals("Martin Fowler e Kent Beck", foundBookSix.getAuthor());
-		assertEquals("Refactoring", foundBookSix.getTitle());
-		assertEquals(88.00, foundBookSix.getPrice());
+		assertEquals("Richard Hunter e George Westerman", foundBookSix.getAuthor());
+		assertEquals("O verdadeiro valor de TI", foundBookSix.getTitle());
+		assertEquals(95.0, foundBookSix.getPrice());
 	}
 	
 	@Test
@@ -296,6 +292,47 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
 				.get()
 			.then()
 				.statusCode(403);
+	}
+	
+	@Test
+	@Order(7)
+	public void testHATEOAS() throws JsonMappingException, JsonProcessingException {
+
+		var untratedContent = given().spec(specification)
+				.config(
+					RestAssuredConfig
+						.config()
+						.encoderConfig(EncoderConfig.encoderConfig()
+							.encodeContentTypeAs(
+								TestConfigs.CONTENT_TYPE_YML, 
+								ContentType.TEXT)))
+				.contentType(TestConfigs.CONTENT_TYPE_YML)
+				.accept(TestConfigs.CONTENT_TYPE_YML)
+				.queryParams("page", 1, "size", 6, "direction", "asc")
+					.when()
+					.get()
+				.then()
+					.statusCode(200)
+						.extract()
+						.body()
+						 .asString();
+		
+		var content = untratedContent.replaceAll("\n", "").replaceAll("\r", "");
+		
+		assertTrue(content.contains("rel: \"self\"    href: \"http://localhost:8888/api/book/v1/7\""));
+		assertTrue(content.contains("rel: \"self\"    href: \"http://localhost:8888/api/book/v1/4\""));
+		assertTrue(content.contains("rel: \"self\"    href: \"http://localhost:8888/api/book/v1/10\""));
+
+
+		assertTrue(content.contains("rel: \"first\"  href: \"http://localhost:8888/api/book/v1?direction=asc&page=0&size=6&sort=title,asc\""));
+		assertTrue(content.contains("rel: \"prev\"  href: \"http://localhost:8888/api/book/v1?direction=asc&page=0&size=6&sort=title,asc\""));
+		assertTrue(content.contains("rel: \"self\"  href: \"http://localhost:8888/api/book/v1?page=1&size=6&direction=asc\""));
+		assertTrue(content.contains("rel: \"next\"  href: \"http://localhost:8888/api/book/v1?direction=asc&page=2&size=6&sort=title,asc\""));
+		assertTrue(content.contains("rel: \"last\"  href: \"http://localhost:8888/api/book/v1?direction=asc&page=2&size=6&sort=title,asc\""));
+		
+		assertTrue(content.contains("page:  size: 6  totalElements: 15  totalPages: 3  number: 1"));
+
+		
 	}
 
 	private void mockBook() {
