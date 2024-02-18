@@ -30,7 +30,7 @@ jobs:
 
     - name: Docker compose build
       working-directory: ./05_FirstStepsInJavaSB
-      run: docker compose up
+      run: docker compose up -d --build
 
     - name: Push to Docker Hub Container  Registry
       run: |
