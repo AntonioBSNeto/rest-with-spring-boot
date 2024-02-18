@@ -1,0 +1,43 @@
+name: Continuos Integration with Github Actions
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Docker Login
+      uses: docker/login-action@v3.0.0
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+          
+    - name: Set up JDK 21
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+        
+    - name: Build application jar
+      working-directory: ./05_FirstStepsInJavaSB/rest-with-spring-boot
+      run: mvn clean package
+
+    - name: Docker compose build
+      working-directory: ./05_FirstStepsInJavaSB
+      run: docker compose up
+
+    - name: Push to Docker Hub Container  Registry
+      run: |
+        docker tag ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot:latest ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot:${{ github.run_id }}
+
+        docker push ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot:${{ github.run_id }}
+
+    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+    - name: Update dependency graph
+      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
