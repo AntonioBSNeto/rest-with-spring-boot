@@ -3,7 +3,7 @@ server:
 cors:
    originPatterns: http://localhost:3000,http://localhost:8080
 file:
-  upload-dir: /Documents/uploadDir
+  upload-dir: /home/runner/worker/rest-with-spring-boot/uploadDir
 security:
   jwt:
     token:
