@@ -320,7 +320,7 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
 	@Order(9)
 	public void testHATEOAS() throws JsonMappingException, JsonProcessingException {
 
-		var content = given().spec(specification)
+		var untratedContent = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_XML)
 				.queryParams("page", 3, "size", 10, "direction", "asc")
 				.accept(TestConfigs.CONTENT_TYPE_XML)
@@ -332,10 +332,11 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
 						.body()
 							.asString();
 
+		var content = untratedContent.replaceAll("\n", "").replaceAll("\r", "").replaceAll(" ", "");
+		
 		assertTrue(content.contains("<links><rel>self</rel><href>http://localhost:8888/api/person/v1/677</href></links>"));
 		assertTrue(content.contains("<links><rel>self</rel><href>http://localhost:8888/api/person/v1/846</href></links>"));
 		assertTrue(content.contains("<links><rel>self</rel><href>http://localhost:8888/api/person/v1/714</href></links>"));
-
 		assertTrue(content.contains("<links><rel>first</rel><href>http://localhost:8888/api/person/v1?direction=asc&amp;page=0&amp;size=10&amp;sort=firstName,asc</href></links>"));
 		assertTrue(content.contains("<links><rel>prev</rel><href>http://localhost:8888/api/person/v1?direction=asc&amp;page=2&amp;size=10&amp;sort=firstName,asc</href></links>"));
 		assertTrue(content.contains("<links><rel>self</rel><href>http://localhost:8888/api/person/v1?page=3&amp;size=10&amp;direction=asc</href></links>"));
